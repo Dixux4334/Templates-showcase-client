@@ -1,4 +1,4 @@
-import Code from './code'
+import Code from '../codeHighlighter/code'
 import {
   Tabs as TabsChakra,
   TabList,
@@ -19,7 +19,7 @@ import { editIdState } from '../../../atoms/editIdState'
 import useApi from '../../../hooks/useApi'
 
 const Tabs = ({ languages, id, openEditModal, setTemplates }) => {
-  const { removeTemplate } = useApi()
+  const { remove } = useApi()
   const setEditID = useSetRecoilState(editIdState)
   const handleRemove = () => {
     const onSuccess = {
@@ -33,7 +33,7 @@ const Tabs = ({ languages, id, openEditModal, setTemplates }) => {
       toastTitle: 'an error has occurred',
       toastStatus: 'error',
     }
-    removeTemplate(id, onSuccess, onError)
+    remove('templates', id, onSuccess, onError)
   }
   const handleEdit = () => {
     openEditModal()

@@ -1,8 +1,8 @@
 import { selector } from 'recoil'
 import { templatesState } from './templatesState'
 
-export const allTagsState = selector({
-  key: 'allTags',
+export const allTemplatesTagsState = selector({
+  key: 'allTemplatesTags',
   get: ({ get }) => {
     const templates = get(templatesState)
     const allTags = templates.map(template => template.tags)

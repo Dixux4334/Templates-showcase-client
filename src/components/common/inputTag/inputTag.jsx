@@ -1,42 +1,31 @@
-import { useState } from 'react'
-import { useRecoilValue, useRecoilState } from 'recoil'
-import { allTagsState } from '../../../atoms/allTagsState'
-import { searchTagsState } from '../../../atoms/searchTagsSate'
+import { useEffect } from 'react'
+// import { useRecoilValue, useRecoilState } from 'recoil'
+// import { allTemplatesTagsState } from '../../../atoms/allTemplatesTagsState'
+// import { searchTagsState } from '../../../atoms/searchTagsSate'
+import { useInputTag } from './useInputTag'
 import { CUIAutoComplete } from 'chakra-ui-autocomplete'
+import { useLocation } from 'react-router-dom'
 
-const InputTag = ({ belongsForm, formTags, setTags }) => {
-  const tagsState = useRecoilValue(allTagsState)
-  const [allTags, setAllTags] = useState(tagsState)
-  const [searchTags, setSearchTags] = useRecoilState(searchTagsState)
+const InputTag = ({ belongsForm, formTags, setFormTags }) => {
+  const { pathname } = useLocation()
+  const { allTags, selectedTags, handleCreateTag, handleSelectedTagsChange } =
+    useInputTag({ pathname, belongsForm, formTags, setFormTags })
 
-  const handleCreateItem = item => {
-    setTags([...formTags, item])
-    setAllTags(curr => [...curr, item])
-  }
-
-  const handleSelectedItemsChange = selectedItems => {
-    if (selectedItems) {
-      if (belongsForm) {
-        setTags(selectedItems)
-      } else {
-        setSearchTags(selectedItems)
-      }
-    }
-  }
-
+  useEffect(() => {
+    document.activeElement.blur()
+  }, [])
   return (
     <CUIAutoComplete
-      placeholder="Type a tag"
-      onCreateItem={handleCreateItem}
-      items={belongsForm ? allTags : tagsState}
       disableCreateItem={!belongsForm}
-      selectedItems={belongsForm ? formTags : searchTags}
+      placeholder="Type a tag"
+      items={allTags}
+      selectedItems={selectedTags}
       onSelectedItemsChange={changes =>
-        handleSelectedItemsChange(changes.selectedItems)
+        handleSelectedTagsChange(changes.selectedItems)
       }
-      listStyleProps={{ bg: 'gray.700' }}
+      onCreateItem={handleCreateTag}
       highlightItemBg="gray.600"
-      inputStyleProps={{ autoFocus: false }}
+      listStyleProps={{ bg: 'gray.700' }}
     />
   )
 }

@@ -1,10 +1,10 @@
 import { useToast } from '@chakra-ui/react'
-import templatesService from '../services/templates'
+import apiService from '../services/api'
 
 const useApi = () => {
   const toast = useToast()
   const handleResponse = (res, { toastTitle, toastStatus, callBack }) => {
-    callBack(res)
+    if (callBack !== undefined) callBack(res)
     toast({
       title: toastTitle,
       status: toastStatus,
@@ -13,27 +13,30 @@ const useApi = () => {
     })
   }
 
-  const updateTemplate = (id, data, successData, errorData) =>
-    templatesService
-      .update(id, data)
+  const update = (service, id, data, successData, errorData) =>
+    apiService
+      .update(service, id, data)
       .then(res => handleResponse(res, successData))
       .catch(err => handleResponse(err, errorData))
 
-  const createTemplate = (data, successData, errorData) =>
-    templatesService
-      .create(data)
+  const create = (service, data, successData, errorData) =>
+    apiService
+      .create(service, data)
       .then(res => handleResponse(res, successData))
       .catch(err => handleResponse(err, errorData))
-  const removeTemplate = (id, successData, errorData) => {
-    templatesService
-      .deleteItem(id)
+  const remove = (service, id, successData, errorData) => {
+    apiService
+      .deleteItem(service, id)
       .then(res => handleResponse(res, successData))
-      .catch(err => handleResponse(err, errorData))
+      .catch(err => {
+        // console.log('error delete function')
+        handleResponse(err, errorData)
+      })
   }
   return {
-    createTemplate,
-    updateTemplate,
-    removeTemplate,
+    create,
+    update,
+    remove,
   }
 }
 

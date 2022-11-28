@@ -1,18 +1,18 @@
 import { Container } from '@chakra-ui/react'
-import TemplatesContainer from '../common/template/templatesContainer'
-import InputTag from '../common/inputTag/inputTag'
 import Navbar from '../common/navbar/navbar'
+import StyleSheetsContainer from '../common/stylesheets/stylesSheetsContainer'
+import InputTag from '../common/inputTag/inputTag'
 
-const HomeView = () => {
+const StylesheetsView = () => {
   return (
     <>
       <Navbar />
       <Container maxW="container.lg">
         <InputTag belongsForm={false} />
-        <TemplatesContainer />
+        <StyleSheetsContainer />
       </Container>
     </>
   )
 }
 
-export default HomeView
+export default StylesheetsView

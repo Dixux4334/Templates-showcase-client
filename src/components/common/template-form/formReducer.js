@@ -9,47 +9,53 @@ export const INITIAL_STATE = {
     js: '',
   },
   tags: [],
-  finalTags: [],
+  stylesheets: [],
 }
 
 export const formReducer = (state, action) => {
-  switch (action.type) {
+  const { type, payload } = action
+  switch (type) {
     case 'SET_INITIAL_STATE': {
       const languages = {
         html: decodeBase64(
-          action.payload.languages.find(el => el.name === 'html').code
+          payload.languages.find(el => el.name === 'html').code
         ),
         scss: decodeBase64(
-          action.payload.languages.find(el => el.name === 'scss').code
+          payload.languages.find(el => el.name === 'scss').code
         ),
-        js: decodeBase64(
-          action.payload.languages.find(el => el.name === 'js').code
-        ),
+        js: decodeBase64(payload.languages.find(el => el.name === 'js').code),
       }
-
-      const tags = action.payload.tags.map(tag => ({ value: tag, label: tag }))
+      const tags = payload.tags.map(tag => ({ value: tag, label: tag }))
+      const stylesheets = payload.stylesheets
+        ? payload.stylesheets.map(stylesheet => ({
+            value: stylesheet.value,
+            label: stylesheet.label,
+          }))
+        : []
 
       return {
         ...state,
         languages,
         tags,
-        finalTags: action.payload.tags,
+        stylesheets,
       }
     }
-    case 'SET_TAGS': {
-      const finalTags = action.payload.map(tag => tag.value)
+    case 'SET_STYLESHEETS':
       return {
         ...state,
-        tags: action.payload,
-        finalTags,
+        stylesheets: payload,
       }
-    }
+    case 'SET_TAGS':
+      return {
+        ...state,
+        tags: payload,
+      }
     case 'CHANGE_INPUT':
       return {
         ...state,
         languages: {
           ...state.languages,
-          [action.payload.name]: action.payload.value,
+          [payload.name]: payload.value,
         },
       }
     case 'FETCH_START':
@@ -58,16 +64,7 @@ export const formReducer = (state, action) => {
         ...state,
       }
     case 'FETCH_SUCCESS':
-      return {
-        isLoading: false,
-        error: false,
-        languages: {
-          html: '',
-          scss: '',
-          js: '',
-        },
-        tags: [],
-      }
+      return INITIAL_STATE
     case 'FETCH_ERROR':
       return {
         isLoading: false,

@@ -1,31 +1,25 @@
-import { useRef } from 'react'
-import {
-  Box,
-  Flex,
-  Button,
-  useColorModeValue,
-  Container,
-} from '@chakra-ui/react'
-import CreateTemplate from '../create-editTemplate/createTemplate'
+import { Box, Flex, useColorModeValue, Container, Link } from '@chakra-ui/react'
+import { Link as ReactRouterLink, useLocation } from 'react-router-dom'
+import { useNavLinks } from './useNavLinks'
 
 const Navbar = () => {
-  const createTemplateRef = useRef()
-  const handleClick = () => {
-    createTemplateRef.current.onOpen()
-  }
+  const { pathname } = useLocation()
+  const NavLinks = useNavLinks(pathname)
+
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
         <Container maxW="container.lg">
           <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-            <Box>Logo</Box>
-            <Button colorScheme="blue" size="sm" onClick={handleClick}>
-              Add Template
-            </Button>
+            <Box>
+              <Link as={ReactRouterLink} to="/">
+                Templates-showcase
+              </Link>
+            </Box>
+            <NavLinks />
           </Flex>
         </Container>
       </Box>
-      <CreateTemplate ref={createTemplateRef} />
     </>
   )
 }

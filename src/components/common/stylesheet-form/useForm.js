@@ -3,28 +3,27 @@ import { INITIAL_STATE, formReducer } from './formReducer'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import useApi from '../../../hooks/useApi'
 import { encodeBase64 } from '../../../utils/base64'
-import { templatesState } from '../../../atoms/templatesState'
+import { styleSheetsState } from '../../../atoms/styleSheetsState'
 import {
-  getTemplate,
-  editTemplate,
-} from '../../../atoms/filteredTemplatesState'
+  getStylesheet,
+  editStylesheet,
+} from '../../../atoms/filteredStyleSheetsState'
 
 const useForm = (isEdit, editID, onClose) => {
-  const { createTemplate, updateTemplate } = useApi()
+  const { create, update } = useApi()
   const [formState, dispatch] = useReducer(formReducer, INITIAL_STATE)
-  const template = useRecoilValue(getTemplate(editID))
+  const stylesheet = useRecoilValue(getStylesheet(editID))
 
-  const setNewTemplate = useSetRecoilState(templatesState)
-  const setEditTemplate = useSetRecoilState(editTemplate(editID))
+  const setNewStyleSheet = useSetRecoilState(styleSheetsState)
+  const setEditStyleSheet = useSetRecoilState(editStylesheet(editID))
 
   useEffect(() => {
-    if (isEdit) dispatch({ type: 'SET_INITIAL_STATE', payload: template })
+    if (isEdit) dispatch({ type: 'SET_INITIAL_STATE', payload: stylesheet })
   }, [])
 
   const handleChange = ({ target: { name, value } }) =>
     dispatch({ type: 'CHANGE_INPUT', payload: { name, value } })
 
-  const setTags = tags => dispatch({ type: 'SET_TAGS', payload: tags })
   const fetchStart = () => dispatch({ type: 'FETCH_START' })
   const fetchSuccess = () => dispatch({ type: 'FETCH_SUCCESS' })
   const fetchError = () => dispatch({ type: 'FETCH_ERROR' })
@@ -33,10 +32,8 @@ const useForm = (isEdit, editID, onClose) => {
     fetchStart()
 
     const data = {
-      html: encodeBase64(formState.languages.html),
-      js: encodeBase64(formState.languages.js),
-      scss: encodeBase64(formState.languages.scss),
-      tags: formState.finalTags,
+      name: formState.name,
+      code: encodeBase64(formState.code),
     }
 
     const onError = {
@@ -47,32 +44,31 @@ const useForm = (isEdit, editID, onClose) => {
 
     if (isEdit) {
       const onSuccess = {
-        toastTitle: 'Template has been successfully updated',
+        toastTitle: 'Stylesheet has been successfully updated',
         toastStatus: 'success',
         callBack: res => {
-          setEditTemplate(res)
+          setEditStyleSheet(res)
           fetchSuccess()
           onClose()
         },
       }
-      updateTemplate(editID, data, onSuccess, onError)
+      update('stylesheets', editID, data, onSuccess, onError)
     } else {
       const onSuccess = {
-        toastTitle: 'Template has been created successfully',
+        toastTitle: 'Stylesheet has been created successfully',
         toastStatus: 'success',
         callBack: res => {
-          setNewTemplate(state => [...state, res])
+          setNewStyleSheet(state => [...state, res])
           fetchSuccess()
           onClose()
         },
       }
-      createTemplate(data, onSuccess, onError)
+      create('stylesheets', data, onSuccess, onError)
     }
   }
   return {
     formState,
     handleChange,
-    setTags,
     submit,
   }
 }

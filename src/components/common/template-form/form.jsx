@@ -4,7 +4,7 @@ import InputTag from '../inputTag/inputTag'
 import useForm from './useForm'
 
 const TemplateForm = forwardRef(({ isEdit, editID, onClose }, ref) => {
-  const { formState, handleChange, setTags, submit } = useForm(
+  const { formState, handleChange, setTags, setStylesheets, submit } = useForm(
     isEdit,
     editID,
     onClose
@@ -39,9 +39,15 @@ const TemplateForm = forwardRef(({ isEdit, editID, onClose }, ref) => {
       />
       <Text>Tags:</Text>
       <InputTag
-        belongsForm={true}
+        belongsForm="templates"
         formTags={formState.tags}
-        setTags={setTags}
+        setFormTags={setTags}
+      />
+      <Text>Stylesheets:</Text>
+      <InputTag
+        belongsForm="stylesheets"
+        formTags={formState.stylesheets}
+        setFormTags={setStylesheets}
       />
     </>
   )

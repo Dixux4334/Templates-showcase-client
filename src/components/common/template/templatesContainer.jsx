@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import Template from './template'
 import { useRecoilValue } from 'recoil'
 import { filteredTemplatesState } from '../../../atoms/filteredTemplatesState'
-import EditTemplate from '../create-editTemplate/editTemplate'
+import EditTemplate from '../template-form/editTemplate'
 
 const TemplatesContainer = () => {
   const templates = useRecoilValue(filteredTemplatesState)
@@ -14,10 +14,10 @@ const TemplatesContainer = () => {
 
   return (
     <>
-      {templates.map((template, index) => (
+      {templates.map(template => (
         <Template
           data={template}
-          key={index}
+          key={template.id}
           openEditModal={handleEditTemplate}
         ></Template>
       ))}

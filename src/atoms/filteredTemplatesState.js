@@ -7,16 +7,12 @@ export const filteredTemplatesState = selector({
   get: ({ get }) => {
     const query = get(searchTagsState)
     const templates = get(templatesState)
-    if (query.length) {
-      const compareTags = (tags, query) =>
-        query.some(v => tags.includes(v.value))
-      const filtered = templates.filter(template =>
-        compareTags(template.tags, query)
-      )
-      return filtered
-    } else {
-      return templates
-    }
+    if (!query.length) return templates
+    const compareTags = (tags, query) => query.some(v => tags.includes(v.value))
+    const filtered = templates.filter(template =>
+      compareTags(template.tags, query)
+    )
+    return filtered
   },
 })
 
